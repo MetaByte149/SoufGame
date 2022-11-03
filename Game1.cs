@@ -1,52 +1,59 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SharpDX.Direct3D9;
+using System;
 
-namespace soufGame
-{
-    public class Game1 : Game
-    {
-        private GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
+namespace soufGame;
 
-        public Game1()
-        {
-            _graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
-            IsMouseVisible = true;
-        }
+public class Game1 : Game {
+    private GraphicsDeviceManager graphics;
+    private SpriteBatch spriteBatch;
 
-        protected override void Initialize()
-        {
-            // TODO: Add your initialization logic here
 
-            base.Initialize();
-        }
+    Player testPlayer;
 
-        protected override void LoadContent()
-        {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
+    public Game1() {
+        graphics = new GraphicsDeviceManager(this);
+        Content.RootDirectory = "Content";
+        IntPtr hWnd = Window.Handle;
+        System.Windows.Forms.Control ctrl = System.Windows.Forms.Control.FromHandle(hWnd);
+        System.Windows.Forms.Form form = ctrl.FindForm();
+        form.TransparencyKey = System.Drawing.Color.Black;
+    }
 
-            // TODO: use this.Content to load your game content here
-        }
+    protected override void Initialize() {
 
-        protected override void Update(GameTime gameTime)
-        {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
 
-            // TODO: Add your update logic here
 
-            base.Update(gameTime);
-        }
 
-        protected override void Draw(GameTime gameTime)
-        {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+        base.Initialize();
+    }
 
-            // TODO: Add your drawing code here
+    protected override void LoadContent() {
+        spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            base.Draw(gameTime);
-        }
+        testPlayer = new Player(Content);
+    }
+
+    protected override void Update(GameTime gameTime) {
+        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            Exit();
+
+        testPlayer.Update();
+
+        base.Update(gameTime);
+    }
+
+    protected override void Draw(GameTime gameTime) {
+        GraphicsDevice.Clear(Color.Transparent);
+
+        spriteBatch.Begin();
+
+        testPlayer.Draw(spriteBatch);
+
+        spriteBatch.End();
+
+        base.Draw(gameTime);
     }
 }
