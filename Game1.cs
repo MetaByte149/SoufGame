@@ -65,7 +65,7 @@ public class Game1 : Game {
         context.spriteBatch.Draw(
             groundTexture,
             new Rectangle(0, context.graphics.PreferredBackBufferHeight - (int)(testPlayer.height * 0.7), context.graphics.PreferredBackBufferWidth, (int)(testPlayer.height * 0.7)),
-            Color.Red
+            Color.Green
             );
         testPlayer.Draw(context.spriteBatch);
 
