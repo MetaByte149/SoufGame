@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SharpDX.Direct3D9;
+using soufGame.Model;
 using System;
 
 namespace soufGame;
@@ -33,13 +34,17 @@ public class Game1 : Game {
     protected override void LoadContent() {
         spriteBatch = new SpriteBatch(GraphicsDevice);
 
-        testPlayer = new Player(Content);
+        testPlayer = new Player(Content, graphics);
     }
 
     protected override void Update(GameTime gameTime) {
-        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+
+        var keyboardState = Keyboard.GetState();
+
+        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || keyboardState.IsKeyDown(Keys.Escape))
             Exit();
 
+        if (keyboardState.IsKeyDown(Keys.Space)) testPlayer.position = new Vector2(graphics.PreferredBackBufferWidth / 2, testPlayer.floorHeight);
         testPlayer.Update();
 
         base.Update(gameTime);
