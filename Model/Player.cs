@@ -37,25 +37,22 @@ internal class Player {
     public Vector2 position;
     public Vector2 velocity;
     public PlayerActionType playerAction;
+    public Color color;
 
 
     public string playerName;
 
     public int animationIndex;
     public int floorHeight;
-    public int width;
-    public int height;
 
-    public Player(string _playerName, GameContext _context) {
+    public Player(string _playerName, GameContext _context, Color _color) {
         playerName = _playerName;
         context = _context;
+        color = _color;
         texture = context.contentManager.Load<Texture2D>("soufPlayer1");
         font = context.contentManager.Load<SpriteFont>("soufFont");
 
-        width = 64;
-        height = 64;
-
-        floorHeight = context.graphics.PreferredBackBufferHeight - (int)Math.Floor(height * 1.2);
+        floorHeight = context.graphics.PreferredBackBufferHeight - (int)Math.Floor(Constants.playerHeight * 1.2);
         position = new Vector2(context.graphics.PreferredBackBufferWidth / 2, floorHeight);
         velocity = new Vector2(0, 0);
         playerAction = PlayerActionType.Idle;
@@ -98,7 +95,7 @@ internal class Player {
 
         if (velocity.X < 1 && velocity.X > -1) velocity.X = 0;
         else
-            velocity.X *= 0.8f;
+            velocity.X *= 0.85f;
 
         if (velocity.Y < 1) velocity.Y = 1;
         else
@@ -115,32 +112,32 @@ internal class Player {
         if (position.X < 0) {
             position.X = 0;
             velocity.X *= -1;
-        } else if (position.X > context.graphics.PreferredBackBufferWidth - width) {
-            position.X = context.graphics.PreferredBackBufferWidth - width;
+        } else if (position.X > context.graphics.PreferredBackBufferWidth - Constants.playerHeight) {
+            position.X = context.graphics.PreferredBackBufferWidth - Constants.playerHeight;
             velocity.X *= -1;
         }
 
 
     }
 
-    public void Draw(SpriteBatch spriteBatch) {
+    public void Draw() {
 
         Rectangle sourceRectangle;
 
         switch (playerAction) {
             case PlayerActionType.Idle:
 
-                sourceRectangle = new Rectangle(animationIndex++ * 64, SpriteSheetInfo.idleAnimationHeight, width, height);
+                sourceRectangle = new Rectangle(animationIndex++ * 64, SpriteSheetInfo.idleAnimationHeight, Constants.playerHeight, Constants.playerHeight);
                 if (animationIndex >= SpriteSheetInfo.idleAnimationCount) animationIndex = 0;
-                spriteBatch.Draw(texture, position, sourceRectangle, Color.White);
+                context.spriteBatch.Draw(texture, position, sourceRectangle, color);
                 break;
 
             case PlayerActionType.JumpingL:
             case PlayerActionType.JumpingR:
 
-                sourceRectangle = new Rectangle(animationIndex++ * 64, SpriteSheetInfo.jumpAnimationHeight, width, height);
+                sourceRectangle = new Rectangle(animationIndex++ * 64, SpriteSheetInfo.jumpAnimationHeight, Constants.playerHeight, Constants.playerHeight);
                 if (animationIndex >= SpriteSheetInfo.jumpAnimationCount) animationIndex = 0;
-                spriteBatch.Draw(texture, position, sourceRectangle, Color.White);
+                context.spriteBatch.Draw(texture, position, sourceRectangle, color);
                 break;
 
 
@@ -154,9 +151,9 @@ internal class Player {
         // Finds the center of the string in coordinates inside the text rectangle
         Vector2 textMiddlePoint = font.MeasureString(playerName) / 2;
 
-        spriteBatch.DrawString(font, playerName, position, Color.White, 0, textMiddlePoint, 1.0f, SpriteEffects.None, 0.5f);
+        context.spriteBatch.DrawString(font, playerName, position, Color.White, 0, textMiddlePoint, 1.0f, SpriteEffects.None, 0.5f);
 
-        //sourceRectangle = new Rectangle(animationIndex++ * 64, 704, width, height);
+        //sourceRectangle = new Rectangle(animationIndex++ * 64, 704, Constants.playerHeight, Constants.playerHeight);
         //if (animationIndex >= 7) animationIndex = 0;
         //spriteBatch.Draw(texture, position, sourceRectangle, Color.White);
 
