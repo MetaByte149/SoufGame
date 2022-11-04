@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using SharpDX.Direct3D9;
 using soufGame.Model;
 using System;
+using System.Diagnostics;
 
 namespace soufGame;
 
@@ -13,12 +14,15 @@ public class Game1 : Game {
     private GameContext context;
 
 
-    Player testPlayer;
+    private Player testPlayer;
+
+
+    private Texture2D groundTexture;
 
     public Game1() {
 
         var _graphics = new GraphicsDeviceManager(this);
-        context = new GameContext() { graphics = _graphics, contentManager = Content };
+        context = new GameContext() { graphics = _graphics, contentManager = Content, game = this };
         Content.RootDirectory = "Content";
         IntPtr hWnd = Window.Handle;
         System.Windows.Forms.Control ctrl = System.Windows.Forms.Control.FromHandle(hWnd);
@@ -37,7 +41,8 @@ public class Game1 : Game {
     protected override void LoadContent() {
         var _spriteBatch = new SpriteBatch(GraphicsDevice);
         context.spriteBatch = _spriteBatch;
-        testPlayer = new Player(context);
+        testPlayer = new Player("metabyte149", context);
+        groundTexture = context.contentManager.Load<Texture2D>("green-background");
     }
 
     protected override void Update(GameTime gameTime) {
@@ -57,7 +62,11 @@ public class Game1 : Game {
         GraphicsDevice.Clear(Color.Transparent);
 
         context.spriteBatch.Begin();
-
+        context.spriteBatch.Draw(
+            groundTexture,
+            new Rectangle(0, context.graphics.PreferredBackBufferHeight - (int)(testPlayer.height * 0.7), context.graphics.PreferredBackBufferWidth, (int)(testPlayer.height * 0.7)),
+            Color.Red
+            );
         testPlayer.Draw(context.spriteBatch);
 
         context.spriteBatch.End();

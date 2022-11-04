@@ -13,5 +13,6 @@ internal class GameContext {
     public GraphicsDeviceManager graphics;
     public SpriteBatch spriteBatch;
     public ContentManager contentManager;
+    public Game game;
 
 }
