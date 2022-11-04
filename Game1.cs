@@ -8,14 +8,17 @@ using System;
 namespace soufGame;
 
 public class Game1 : Game {
-    private GraphicsDeviceManager graphics;
-    private SpriteBatch spriteBatch;
+
+
+    private GameContext context;
 
 
     Player testPlayer;
 
     public Game1() {
-        graphics = new GraphicsDeviceManager(this);
+
+        var _graphics = new GraphicsDeviceManager(this);
+        context = new GameContext() { graphics = _graphics, contentManager = Content };
         Content.RootDirectory = "Content";
         IntPtr hWnd = Window.Handle;
         System.Windows.Forms.Control ctrl = System.Windows.Forms.Control.FromHandle(hWnd);
@@ -32,9 +35,9 @@ public class Game1 : Game {
     }
 
     protected override void LoadContent() {
-        spriteBatch = new SpriteBatch(GraphicsDevice);
-
-        testPlayer = new Player(Content, graphics);
+        var _spriteBatch = new SpriteBatch(GraphicsDevice);
+        context.spriteBatch = _spriteBatch;
+        testPlayer = new Player(context);
     }
 
     protected override void Update(GameTime gameTime) {
@@ -44,7 +47,7 @@ public class Game1 : Game {
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || keyboardState.IsKeyDown(Keys.Escape))
             Exit();
 
-        if (keyboardState.IsKeyDown(Keys.Space)) testPlayer.position = new Vector2(graphics.PreferredBackBufferWidth / 2, testPlayer.floorHeight);
+        if (keyboardState.IsKeyDown(Keys.Space)) testPlayer.position = new Vector2(context.graphics.PreferredBackBufferWidth / 2, testPlayer.floorHeight);
         testPlayer.Update();
 
         base.Update(gameTime);
@@ -53,11 +56,11 @@ public class Game1 : Game {
     protected override void Draw(GameTime gameTime) {
         GraphicsDevice.Clear(Color.Transparent);
 
-        spriteBatch.Begin();
+        context.spriteBatch.Begin();
 
-        testPlayer.Draw(spriteBatch);
+        testPlayer.Draw(context.spriteBatch);
 
-        spriteBatch.End();
+        context.spriteBatch.End();
 
         base.Draw(gameTime);
     }

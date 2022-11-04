@@ -42,17 +42,16 @@ internal class Player {
 
     public int width;
     public int height;
+    private GameContext context;
 
-
-
-    public Player(ContentManager content, GraphicsDeviceManager graphics) {
-        texture = content.Load<Texture2D>("soufPlayer1");
+    public Player(GameContext context) {
+        texture = context.contentManager.Load<Texture2D>("soufPlayer1");
 
         width = 64;
         height = 64;
 
-        floorHeight = graphics.PreferredBackBufferHeight - (int)Math.Floor(height * 1.5);
-        position = new Vector2(graphics.PreferredBackBufferWidth / 2, floorHeight);
+        floorHeight = context.graphics.PreferredBackBufferHeight - (int)Math.Floor(height * 1.5);
+        position = new Vector2(context.graphics.PreferredBackBufferWidth / 2, floorHeight);
         velocity = new Vector2(0, 0);
         playerAction = PlayerActionType.Idle;
 
@@ -60,6 +59,9 @@ internal class Player {
         animationIndex = 0;
 
 
+    }
+
+    public Player() {
     }
 
     public void Update() {
