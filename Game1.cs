@@ -40,7 +40,10 @@ public class Game1 : Game {
     protected override void Initialize() {
 
 
-
+        context.graphics.IsFullScreen = false;
+        context.graphics.PreferredBackBufferWidth = 1920;
+        context.graphics.PreferredBackBufferHeight = 1080;
+        context.graphics.ApplyChanges();
 
         base.Initialize();
     }
