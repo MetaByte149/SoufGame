@@ -30,6 +30,7 @@ internal class Player
     }
 
     public static Random rnd = new();
+    public static Color[] possibleColors = new Color[] { Color.Red, Color.Blue, Color.Green, Color.Black, Color.Aqua, Color.Purple };
 
     private readonly GameContext context;
     public Texture2D texture;
@@ -45,11 +46,10 @@ internal class Player
     public int animationIndex;
     public int floorHeight;
 
-    public Player(string _playerName, GameContext _context, Color _color)
+    public Player(string _playerName, GameContext _context)
     {
         playerName = _playerName;
         context = _context;
-        color = _color;
         texture = context.contentManager.Load<Texture2D>("soufPlayer1");
         font = context.contentManager.Load<SpriteFont>("soufFont");
 
@@ -60,6 +60,7 @@ internal class Player
         velocity = new Vector2(0, 0);
         playerAction = PlayerActionType.Idle;
 
+        color = possibleColors[rnd.Next(0, possibleColors.Length)];
         animationIndex = 0;
     }
 

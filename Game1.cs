@@ -6,6 +6,7 @@ using soufGame.Model;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace soufGame;
@@ -22,6 +23,7 @@ public class Game1 : Game
     private GameState gameState;
 
     private GameContext context;
+    private ServerConnection serverConnection;
 
 
     private List<Player> players;
@@ -32,7 +34,6 @@ public class Game1 : Game
     public SpriteFont soufFont;
 
     private string textInput;
-    private Regex streamerNameRegex;
 
 
     public Game1()
@@ -69,19 +70,22 @@ public class Game1 : Game
         gameState = GameState.inputName;
 
         textInput = string.Empty;
-        streamerNameRegex = new(@"^[a-zA-Z0-9_.-]*$");
     }
 
     protected override void LoadContent()
     {
         var _spriteBatch = new SpriteBatch(GraphicsDevice);
         context.spriteBatch = _spriteBatch;
-        players.Add(new Player("metabyte149", context, Color.White));
-        players.Add(new Player("CullTk", context, Color.Blue));
-        players.Add(new Player("Tupie_san", context, Color.Red));
+
         groundTexture = context.contentManager.Load<Texture2D>("green-background");
 
         soufFont = context.contentManager.Load<SpriteFont>("soufFont");
+    }
+
+    protected override void OnExiting(object sender, EventArgs args)
+    {
+        serverConnection.Close();
+        base.OnExiting(sender, args);
     }
 
     protected override void Update(GameTime gameTime)
@@ -95,12 +99,42 @@ public class Game1 : Game
         switch (gameState)
         {
             case GameState.inputName:
-                if (keyboardState.IsKeyDown(Keys.Enter)) gameState = GameState.game;
+                if (keyboardState.IsKeyDown(Keys.Enter))
+                {
+                    serverConnection = new(textInput);
+                    serverConnection.Start();
+
+                    gameState = GameState.game;
+                }
                 break;
 
             case GameState.game:
 
                 if (keyboardState.IsKeyDown(Keys.Space)) foreach (Player player in players) player.position = new Vector2(context.graphics.PreferredBackBufferWidth / 2, context.graphics.PreferredBackBufferHeight - (int)Math.Floor(Constants.playerHeight * 1.2));
+
+                // Check if new chatUsers are different from the current ones
+                var oldPlayers = players.Select((el) => el.playerName).ToArray();
+                var newPlayers = serverConnection.latestChatUsers.Select((el) => el.username).ToArray();
+                var foundNewName = false;
+
+                if (oldPlayers.Count() == 0 && newPlayers.Count() > 0)
+                {
+                    foundNewName = true;
+                }
+                else
+                {
+                    foreach (string oldPlayerName in oldPlayers)
+                        if (!newPlayers.Contains(oldPlayerName))
+                        {
+                            foundNewName = true;
+                            Console.WriteLine("NEW PLAYERS");
+                        }
+                }
+
+                if (foundNewName)
+                    players = newPlayers.Select((name) => new Player(name, context)).ToList();
+
+
                 foreach (Player player in players) player.Update();
 
                 break;
