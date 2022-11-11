@@ -33,8 +33,6 @@ internal class Player
     public static Color[] possibleColors = new Color[] { Color.Red, Color.Blue, Color.Green, Color.Black, Color.Aqua, Color.Purple };
 
     private readonly GameContext context;
-    public Texture2D texture;
-    public SpriteFont font;
 
     public Vector2 position;
     public Vector2 velocity;
@@ -50,8 +48,6 @@ internal class Player
     {
         playerName = _playerName;
         context = _context;
-        texture = context.contentManager.Load<Texture2D>("soufPlayer1");
-        font = context.contentManager.Load<SpriteFont>("soufFont");
 
         floorHeight =
             context.graphics.PreferredBackBufferHeight
@@ -136,7 +132,7 @@ internal class Player
                 );
                 if (animationIndex >= SpriteSheetInfo.idleAnimationCount)
                     animationIndex = 0;
-                context.spriteBatch.Draw(texture, position, sourceRectangle, color);
+                context.spriteBatch.Draw(context.graphicManager.playerTexture, position, sourceRectangle, color);
                 break;
 
             case PlayerActionType.JumpingL:
@@ -150,7 +146,7 @@ internal class Player
                 );
                 if (animationIndex >= SpriteSheetInfo.jumpAnimationCount)
                     animationIndex = 0;
-                context.spriteBatch.Draw(texture, position, sourceRectangle, color);
+                context.spriteBatch.Draw(context.graphicManager.playerTexture, position, sourceRectangle, color);
                 break;
 
             default:
@@ -159,10 +155,10 @@ internal class Player
         }
 
         // Finds the center of the string in coordinates inside the text rectangle
-        Vector2 textMiddlePoint = font.MeasureString(playerName) / 2;
+        Vector2 textMiddlePoint = context.graphicManager.soufFont.MeasureString(playerName) / 2;
 
         context.spriteBatch.DrawString(
-            font,
+            context.graphicManager.soufFont,
             playerName,
             position,
             Color.White,

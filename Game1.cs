@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using SharpDX.Direct3D9;
 using soufGame.Model;
 using System;
 using System.Collections.Generic;
@@ -28,19 +27,20 @@ public class Game1 : Game
 
     private List<Player> players;
 
-
-    private Texture2D groundTexture;
-
-    public SpriteFont soufFont;
-
     private string textInput;
 
 
     public Game1()
     {
 
-        var _graphics = new GraphicsDeviceManager(this);
-        context = new GameContext() { graphics = _graphics, contentManager = Content, game = this };
+        context = new GameContext()
+        {
+            graphics = new GraphicsDeviceManager(this),
+            contentManager = Content,
+            game = this,
+            graphicManager = new()
+        };
+
         Content.RootDirectory = "Content";
 
         IntPtr hWnd = Window.Handle;
@@ -49,8 +49,6 @@ public class Game1 : Game
         form.TransparencyKey = System.Drawing.Color.Black;
 
         players = new List<Player>();
-
-
 
     }
 
@@ -77,9 +75,8 @@ public class Game1 : Game
         var _spriteBatch = new SpriteBatch(GraphicsDevice);
         context.spriteBatch = _spriteBatch;
 
-        groundTexture = context.contentManager.Load<Texture2D>("green-background");
+        context.graphicManager.LoadContent(context);
 
-        soufFont = context.contentManager.Load<SpriteFont>("soufFont");
     }
 
     protected override void OnExiting(object sender, EventArgs args)
@@ -161,12 +158,12 @@ public class Game1 : Game
             case GameState.inputName:
 
                 context.spriteBatch.Draw(
-                        groundTexture,
+                        context.graphicManager.groundTexture,
                         new Rectangle(0, context.graphics.PreferredBackBufferHeight - (int)(Constants.playerHeight * 2.5), context.graphics.PreferredBackBufferWidth, (int)(Constants.playerHeight * 2.5)),
                         Color.Green
                         );
 
-                context.spriteBatch.DrawString(soufFont, textInput, new(20, 20), Color.Red);
+                context.spriteBatch.DrawString(context.graphicManager.soufFont, textInput, new(20, 20), Color.Red);
 
 
 
@@ -175,7 +172,7 @@ public class Game1 : Game
             case GameState.game:
 
                 context.spriteBatch.Draw(
-                    groundTexture,
+                    context.graphicManager.groundTexture,
                     new Rectangle(0, context.graphics.PreferredBackBufferHeight - (int)(Constants.playerHeight * 0.7), context.graphics.PreferredBackBufferWidth, (int)(Constants.playerHeight * 0.7)),
                     Color.Green
                     );
