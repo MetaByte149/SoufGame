@@ -115,7 +115,16 @@ public class ServerConnection
 
     public void Close()
     {
-        tcpClient.Dispose();
-        stream.Dispose();
+        tcpClient?.Dispose();
+        stream?.Dispose();
+    }
+
+    internal void StartDummy()
+    {
+        latestChatUsers = new NetworkChatUser[] {
+            new("Metabyte149", 0, 5),
+            new ("Soufyan", 10, 15),
+            new ("Bytemeta", 20, 25)
+        };
     }
 }
