@@ -98,8 +98,19 @@ public class Game1 : Game
             case GameState.inputName:
                 if (keyboardState.IsKeyDown(Keys.Enter))
                 {
+
                     serverConnection = new(textInput);
-                    serverConnection.Start();
+
+                    if (textInput == "test")
+                    {
+                        serverConnection.StartDummy();
+
+                    }
+                    else
+                    {
+
+                        serverConnection.Start();
+                    }
 
                     gameState = GameState.game;
                 }
@@ -132,7 +143,7 @@ public class Game1 : Game
                     players = newPlayers.Select((name) => new Player(name, context)).ToList();
 
 
-                foreach (Player player in players) player.Update();
+                foreach (Player player in players) player.Update(gameTime);
 
                 break;
         }

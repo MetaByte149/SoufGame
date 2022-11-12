@@ -1,13 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Content;
-using System.Security.Cryptography;
 using System;
 using System.Diagnostics;
-using MonoGame.Extended.Animations;
-using System.Runtime.InteropServices;
-using MonoGame.Extended;
 
 namespace soufGame.Model;
 
@@ -20,17 +14,10 @@ internal class Player
         JumpingR
     }
 
-    public static class SpriteSheetInfo
-    {
-        public static int idleAnimationHeight = 640;
-        public static int idleAnimationCount = 9;
-
-        public static int jumpAnimationHeight = 256;
-        public static int jumpAnimationCount = 7;
-    }
-
     public static Random rnd = new();
     public static Color[] possibleColors = new Color[] { Color.Red, Color.Blue, Color.Green, Color.Black, Color.Aqua, Color.Purple };
+
+    public static int animationFrameTime = 100;
 
     private readonly GameContext context;
 
@@ -42,6 +29,7 @@ internal class Player
     public string playerName;
 
     public int animationIndex;
+    public int animationTimer;
     public int floorHeight;
 
     public Player(string _playerName, GameContext _context)
@@ -62,7 +50,7 @@ internal class Player
 
     public Player() { }
 
-    public void Update()
+    public void Update(GameTime gameTime)
     {
         // Behaviour
         if (playerAction == PlayerActionType.Idle)
@@ -92,8 +80,8 @@ internal class Player
         else
             velocity.X *= 0.85f;
 
-        if (velocity.Y < 1)
-            velocity.Y = 1;
+        if (velocity.Y < 0.8f)
+            velocity.Y = 0.8f;
         else
             velocity.Y *= 0.8f;
 
@@ -101,7 +89,6 @@ internal class Player
         {
             position.Y = floorHeight;
             playerAction = PlayerActionType.Idle;
-            animationIndex = 0;
         }
 
         if (position.X < 0)
@@ -114,6 +101,19 @@ internal class Player
             position.X = context.graphics.PreferredBackBufferWidth - Constants.playerHeight;
             velocity.X *= -1;
         }
+
+
+        // animation index calculation
+        animationTimer += gameTime.ElapsedGameTime.Milliseconds;
+        if (animationTimer > animationFrameTime)
+        {
+            animationTimer = 0;
+            if (animationIndex >= 1)
+                animationIndex = 0;
+            else
+                animationIndex++;
+        }
+
     }
 
     public void Draw()
@@ -124,14 +124,16 @@ internal class Player
         {
             case PlayerActionType.Idle:
 
+                Console.WriteLine(animationIndex);
+
                 sourceRectangle = new Rectangle(
-                    animationIndex++ * 64,
-                    SpriteSheetInfo.idleAnimationHeight,
-                    Constants.playerHeight,
+                    animationIndex * 64,
+                    0,
+                    Constants.playerWidth,
                     Constants.playerHeight
                 );
-                if (animationIndex >= SpriteSheetInfo.idleAnimationCount)
-                    animationIndex = 0;
+
+
                 context.spriteBatch.Draw(context.graphicManager.playerTexture, position, sourceRectangle, color);
                 break;
 
@@ -139,13 +141,12 @@ internal class Player
             case PlayerActionType.JumpingR:
 
                 sourceRectangle = new Rectangle(
-                    animationIndex++ * 64,
-                    SpriteSheetInfo.jumpAnimationHeight,
-                    Constants.playerHeight,
+                    64,
+                    0,
+                    Constants.playerWidth,
                     Constants.playerHeight
                 );
-                if (animationIndex >= SpriteSheetInfo.jumpAnimationCount)
-                    animationIndex = 0;
+
                 context.spriteBatch.Draw(context.graphicManager.playerTexture, position, sourceRectangle, color);
                 break;
 
@@ -153,6 +154,8 @@ internal class Player
                 Debug.WriteLine("no playeraction!! Not drawing sprite.");
                 break;
         }
+
+
 
         // Finds the center of the string in coordinates inside the text rectangle
         Vector2 textMiddlePoint = context.graphicManager.soufFont.MeasureString(playerName) / 2;
@@ -168,15 +171,6 @@ internal class Player
             SpriteEffects.None,
             0.5f
         );
-
-        //sourceRectangle = new Rectangle(animationIndex++ * 64, 704, Constants.playerHeight, Constants.playerHeight);
-        //if (animationIndex >= 7) animationIndex = 0;
-        //spriteBatch.Draw(texture, position, sourceRectangle, Color.White);
-
-
-
-        // Drawing the full thing
-        //spriteBatch.Draw(texture, new Vector2(position.X, position.Y), Color.White);
     }
 
     public override string ToString()

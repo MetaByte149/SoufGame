@@ -16,7 +16,7 @@ internal class GraphicManager
     public void LoadContent(GameContext context)
     {
         groundTexture = context.contentManager.Load<Texture2D>("green-background");
-        playerTexture = context.contentManager.Load<Texture2D>("soufPlayer1");
+        playerTexture = context.contentManager.Load<Texture2D>("slime_spritesheet");
 
 
         soufFont = context.contentManager.Load<SpriteFont>("soufFont");
