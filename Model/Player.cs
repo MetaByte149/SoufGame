@@ -15,7 +15,7 @@ internal class Player
     }
 
     public static Random rnd = new();
-    public static Color[] possibleColors = new Color[] { Color.Red, Color.Blue, Color.Green, Color.Black, Color.Aqua, Color.Purple };
+    public static Color[] possibleColors = new Color[] { Color.Red, Color.Blue, Color.Green, Color.Gray, Color.Aqua, Color.Purple };
 
     public static int animationFrameTime = 100;
 
@@ -153,7 +153,8 @@ internal class Player
 
 
         // Finds the center of the string in coordinates inside the text rectangle
-        Vector2 textMiddlePoint = context.graphicManager.soufFont.MeasureString(playerName) / 2;
+        Vector2 textMiddlePoint = context.graphicManager.soufFont.MeasureString(playerName);
+        textMiddlePoint.X = 0;
 
         context.spriteBatch.DrawString(
             context.graphicManager.soufFont,

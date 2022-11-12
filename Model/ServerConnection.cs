@@ -124,7 +124,10 @@ public class ServerConnection
         latestChatUsers = new NetworkChatUser[] {
             new("Metabyte149", 0, 5),
             new ("Soufyan", 10, 15),
-            new ("Bytemeta", 20, 25)
+            new ("Bytemeta", 20, 25),
+            new("CullTk", 30, 35),
+            new ("Tupie_san", 40, 45),
+            new ("UndeadDragon", 50, 55)
         };
     }
 }
