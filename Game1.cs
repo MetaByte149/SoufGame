@@ -204,17 +204,12 @@ public class Game1 : Game
 
         if (Regex.IsMatch(character.ToString(), @"^[a-zA-Z0-9_]+$"))
         {
-            Debug.WriteLine($"ACCEPTED: {character}");
             textInput += character;
         }
         else if (pressedKey == Keys.Back)
         {
             textInput = string.Empty;
         }
-
-
-        // Console.WriteLine(pressedKey);
-        Debug.WriteLine(character);
 
 
     }

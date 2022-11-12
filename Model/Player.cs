@@ -124,7 +124,6 @@ internal class Player
         {
             case PlayerActionType.Idle:
 
-                Console.WriteLine(animationIndex);
 
                 sourceRectangle = new Rectangle(
                     animationIndex * 64,
@@ -148,10 +147,6 @@ internal class Player
                 );
 
                 context.spriteBatch.Draw(context.graphicManager.playerTexture, position, sourceRectangle, color);
-                break;
-
-            default:
-                Debug.WriteLine("no playeraction!! Not drawing sprite.");
                 break;
         }
 
